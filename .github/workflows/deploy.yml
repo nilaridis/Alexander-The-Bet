@@ -27,4 +27,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.0
         with:
           branch: gh-pages # Change this to the branch you want to deploy to (often gh-pages)
-          folder: public   # The folder where the built files are located
+          folder: build   # The folder where the built files are located
