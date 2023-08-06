@@ -2,56 +2,29 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: 'main'
+    branches:
+      - main
 
 jobs:
-  build_site:
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
-      # If you're using pnpm, add this step then change the commands and cache key below to use `pnpm`
-      # - name: Install pnpm
-      #   uses: pnpm/action-setup@v2
-      #   with:
-      #     version: 8
+        uses: actions/checkout@v2
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
-          node-version: 18
-          cache: npm
+          node-version: 14
 
       - name: Install dependencies
         run: npm install
 
-      - name: build
-        env:
-          BASE_PATH: '/nilaridis.github.io'
-        run: |
-          npm run build
-          touch build/.nojekyll
+      - name: Build
+        run: npm run build
 
-      - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v1
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.0
         with:
-          # this should match the `pages` option in your adapter-static options
-          path: 'build/'
-
-  deploy:
-    needs: build_site
-    runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v1
+          branch: gh-pages # Change this to the branch you want to deploy to (often gh-pages)
+          folder: public   # The folder where the built files are located
